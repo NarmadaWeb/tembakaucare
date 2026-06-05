@@ -1,0 +1,60 @@
+name: CI/CD Flutter
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  analyze_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        working-directory: tobacco_expert
+        run: flutter pub get
+
+      - name: Analyze code
+        working-directory: tobacco_expert
+        run: flutter analyze
+
+      - name: Run tests
+        working-directory: tobacco_expert
+        run: flutter test
+
+  build:
+    runs-on: ubuntu-latest
+    needs: analyze_and_test
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        working-directory: tobacco_expert
+        run: flutter pub get
+
+      - name: Build APK
+        working-directory: tobacco_expert
+        run: flutter build apk --debug # Using debug for CI speed and simplicity if no keystore configured
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug.apk
+          path: tobacco_expert/build/app/outputs/flutter-apk/app-debug.apk
