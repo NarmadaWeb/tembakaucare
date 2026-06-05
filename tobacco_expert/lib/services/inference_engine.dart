@@ -3,37 +3,35 @@ import 'dataset.dart';
 
 class InferenceEngine {
   static List<Disease> diagnose(List<String> selectedSymptomIds) {
-    List<Disease> results = [];
+    List<MapEntry<Disease, double>> weightedResults = [];
 
     for (var rule in TobaccoDataset.rules) {
-      // Forward Chaining: Check if all symptoms of a rule are met
-      bool match = true;
       int matchedCount = 0;
-
       for (var symptomId in rule.symptomIds) {
         if (selectedSymptomIds.contains(symptomId)) {
           matchedCount++;
-        } else {
-          match = false;
         }
       }
 
-      // If all symptoms in a rule are present
-      if (match) {
+      if (matchedCount > 0) {
         var disease = TobaccoDataset.diseases.firstWhere((d) => d.id == rule.diseaseId);
-        if (!results.any((r) => r.id == disease.id)) {
-          results.add(disease);
+        double accuracy = (matchedCount / rule.symptomIds.length) * 100;
+
+        int existingIndex = weightedResults.indexWhere((e) => e.key.id == disease.id);
+        if (existingIndex != -1) {
+          if (weightedResults[existingIndex].value < accuracy) {
+            weightedResults[existingIndex] = MapEntry(disease, accuracy);
+          }
+        } else {
+          weightedResults.add(MapEntry(disease, accuracy));
         }
-      } else if (matchedCount > 0 && (matchedCount / rule.symptomIds.length) >= 0.5) {
-        // Partial match for fuzzy suggestion if no perfect match is found?
-        // For strict forward chaining, we usually need full match,
-        // but for a better UX we can consider diseases where most symptoms match.
-        // Let's stick to full match for now as per standard forward chaining,
-        // or we can sort by confidence.
       }
     }
 
-    return results;
+    // Sort by accuracy descending
+    weightedResults.sort((a, b) => b.value.compareTo(a.value));
+
+    return weightedResults.map((e) => e.key).toList();
   }
 
   static double calculateAccuracy(List<String> selectedSymptomIds, String diseaseId) {
