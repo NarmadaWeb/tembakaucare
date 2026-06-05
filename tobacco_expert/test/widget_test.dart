@@ -9,7 +9,7 @@ void main() {
     await tester.pumpWidget(const TobaccoExpertApp());
 
     // We ignore the exception in this simple smoke test as it's expected for NetworkImage in tests
-    final exception = tester.takeException();
+    tester.takeException();
 
     // Verify that the app title is shown.
     expect(find.text('TobaccoExpert'), findsWidgets);

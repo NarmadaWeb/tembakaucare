@@ -90,7 +90,7 @@ class _ResultScreenState extends State<ResultScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
                 border: const Border(left: BorderSide(color: Colors.green, width: 8)),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)],
               ),
               child: Row(
                 children: [
@@ -197,7 +197,7 @@ class _ResultScreenState extends State<ResultScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.05),
+        color: color.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
         border: Border(left: BorderSide(color: color, width: 4)),
       ),
