@@ -62,7 +62,7 @@ class AboutScreen extends StatelessWidget {
               Container(
                 width: 2,
                 height: 40,
-                color: Colors.green.withOpacity(0.3),
+                color: Colors.green.withValues(alpha: 0.3),
               ),
           ],
         ),

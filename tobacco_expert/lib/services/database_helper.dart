@@ -1,5 +1,7 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'db_stub.dart'
+    if (dart.library.html) 'db_web.dart'
+    if (dart.library.io) 'db_mobile.dart';
 import '../models/models.dart';
 
 class DatabaseHelper {
@@ -16,11 +18,15 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'tobacco_expert.db');
-    return await openDatabase(
+    final factory = await getDatabaseFactory();
+    final path = await getDbPath(factory);
+
+    return await factory.openDatabase(
       path,
-      version: 1,
-      onCreate: _onCreate,
+      options: OpenDatabaseOptions(
+        version: 1,
+        onCreate: _onCreate,
+      ),
     );
   }
 

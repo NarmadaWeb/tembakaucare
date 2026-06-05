@@ -32,10 +32,9 @@ jobs:
         working-directory: tobacco_expert
         run: flutter test
 
-  build:
+  build_android:
     runs-on: ubuntu-latest
     needs: analyze_and_test
-    if: github.event_name == 'pull_request'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,10 +50,62 @@ jobs:
 
       - name: Build APK
         working-directory: tobacco_expert
-        run: flutter build apk --debug # Using debug for CI speed and simplicity if no keystore configured
+        run: flutter build apk --debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug.apk
+          name: app-debug-apk
           path: tobacco_expert/build/app/outputs/flutter-apk/app-debug.apk
+
+  build_ios:
+    runs-on: macos-latest
+    needs: analyze_and_test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        working-directory: tobacco_expert
+        run: flutter pub get
+
+      - name: Build iOS
+        working-directory: tobacco_expert
+        run: flutter build ios --debug --no-codesign
+
+      - name: Upload iOS App
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-ios
+          path: tobacco_expert/build/ios/iphoneos/Runner.app
+
+  build_web:
+    runs-on: ubuntu-latest
+    needs: analyze_and_test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        working-directory: tobacco_expert
+        run: flutter pub get
+
+      - name: Build Web
+        working-directory: tobacco_expert
+        run: flutter build web
+
+      - name: Upload Web Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: tobacco_expert/build/web

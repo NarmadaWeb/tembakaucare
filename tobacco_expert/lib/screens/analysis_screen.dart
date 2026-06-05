@@ -72,7 +72,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> with TickerProviderStat
                         height: 250,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.green.withOpacity(0.2), style: BorderStyle.none),
+                          border: Border.all(color: Colors.green.withValues(alpha: 0.2), style: BorderStyle.none),
                         ),
                         child: CustomPaint(painter: _DashedCirclePainter()),
                       ),
@@ -87,7 +87,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> with TickerProviderStat
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 20,
                               spreadRadius: 5,
                             )
@@ -135,7 +135,7 @@ class _AnalysisScreenState extends State<AnalysisScreen> with TickerProviderStat
             color: isActive ? Colors.white : Colors.grey.shade50,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: isActive ? Colors.green : Colors.transparent, width: 2),
-            boxShadow: isActive ? [BoxShadow(color: Colors.green.withOpacity(0.1), blurRadius: 10)] : null,
+              boxShadow: isActive ? [BoxShadow(color: Colors.green.withValues(alpha: 0.1), blurRadius: 10)] : null,
           ),
           child: Row(
             children: [
@@ -168,7 +168,7 @@ class _DashedCirclePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.green.withOpacity(0.3)
+      ..color = Colors.green.withValues(alpha: 0.3)
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 

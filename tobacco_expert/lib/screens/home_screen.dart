@@ -152,15 +152,15 @@ class HomeScreen extends StatelessWidget {
             // Stats Section
             const Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: StatCard(
                     icon: Icons.storage,
                     value: '50+',
                     label: 'Basis Pengetahuan',
                   ),
                 ),
-                const SizedBox(width: 12),
-                const Expanded(
+                SizedBox(width: 12),
+                Expanded(
                   child: StatCard(
                     icon: Icons.track_changes,
                     value: '95%',
