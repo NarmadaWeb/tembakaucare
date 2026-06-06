@@ -61,6 +61,26 @@ class TobaccoDataset {
         name: 'Kondisi lingkungan lembab',
         description: 'Curah hujan tinggi dalam 2 minggu terakhir.',
         category: 'Lingkungan'),
+    Symptom(
+        id: 'S12',
+        name: 'Tanaman kerdil',
+        description: 'Pertumbuhan terhambat secara signifikan dibandingkan tanaman sehat.',
+        category: 'Umum'),
+    Symptom(
+        id: 'S13',
+        name: 'Lendir pada batang',
+        description: 'Cairan kental keluar dari bekas potongan batang.',
+        category: 'Batang'),
+    Symptom(
+        id: 'S14',
+        name: 'Daun berlubang',
+        description: 'Terdapat bekas gigitan serangga pada helai daun.',
+        category: 'Daun'),
+    Symptom(
+        id: 'S15',
+        name: 'Hama kecil hijau/hitam',
+        description: 'Terlihat koloni serangga kecil di bawah permukaan daun.',
+        category: 'Hama'),
   ];
 
   static List<Disease> diseases = [
@@ -95,6 +115,34 @@ class TobaccoDataset {
         organicTreatment: 'Tambahkan abu kayu atau pupuk kandang yang kaya kalium.',
         chemicalTreatment: 'Aplikasi pupuk KCL atau ZK sesuai dosis.',
         warning: 'Sering terjadi pada tanah berpasir dengan curah hujan tinggi.'),
+    Disease(
+        id: 'D05',
+        name: 'Layu Bakteri (Ralstonia solanacearum)',
+        description: 'Penyakit mematikan yang menyerang sistem pembuluh tanaman, menyebabkan layu permanen.',
+        organicTreatment: 'Gunakan bakteri antagonis seperti Pseudomonas fluorescens pada lubang tanam.',
+        chemicalTreatment: 'Gunakan bakterisida berbahan aktif streptomisin sulfat.',
+        warning: 'Sangat mudah menular melalui air irigasi dan alat pertanian.'),
+    Disease(
+        id: 'D06',
+        name: 'Nematoda Bengkak Akar',
+        description: 'Cacing mikroskopis yang menyerang akar dan menghambat penyerapan nutrisi.',
+        organicTreatment: 'Tanam tanaman perangkap seperti Marigold (Tagetes) di sela tanaman tembakau.',
+        chemicalTreatment: 'Aplikasi nematisida berbahan aktif Karbofuran sesuai dosis.',
+        warning: 'Rotasi tanaman dengan tanaman yang bukan inang nematoda sangat dianjurkan.'),
+    Disease(
+        id: 'D07',
+        name: 'Ulat Grayak (Spodoptera litura)',
+        description: 'Hama pemakan daun yang dapat menghabiskan helai daun dalam waktu singkat.',
+        organicTreatment: 'Gunakan bioinsektisida berbahan aktif Bacillus thuringiensis.',
+        chemicalTreatment: 'Semprot insektisida berbahan aktif Deltametrin atau Sipermetrin.',
+        warning: 'Lakukan pengamatan rutin pada malam hari saat ulat aktif makan.'),
+    Disease(
+        id: 'D08',
+        name: 'Kutu Daun (Myzus persicae)',
+        description: 'Serangga kecil yang mengisap cairan daun dan menjadi vektor berbagai penyakit virus.',
+        organicTreatment: 'Semprotkan larutan sabun atau minyak nabati untuk menutupi pori-pori napas serangga.',
+        chemicalTreatment: 'Insektisida sistemik berbahan aktif Imidakloprid.',
+        warning: 'Populasi yang tinggi dapat menyebabkan embun jelaga pada daun.'),
   ];
 
   static List<Rule> rules = [
@@ -102,5 +150,9 @@ class TobaccoDataset {
     Rule(id: 'R02', symptomIds: ['S03', 'S04'], diseaseId: 'D02'),
     Rule(id: 'R03', symptomIds: ['S05', 'S07', 'S11'], diseaseId: 'D03'),
     Rule(id: 'R04', symptomIds: ['S06'], diseaseId: 'D04'),
+    Rule(id: 'R05', symptomIds: ['S05', 'S13'], diseaseId: 'D05'),
+    Rule(id: 'R06', symptomIds: ['S09', 'S10', 'S12'], diseaseId: 'D06'),
+    Rule(id: 'R07', symptomIds: ['S14', 'S08'], diseaseId: 'D07'),
+    Rule(id: 'R08', symptomIds: ['S15', 'S03', 'S04'], diseaseId: 'D08'),
   ];
 }

@@ -75,6 +75,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
     final disease = widget.results.first;
     final accuracy = InferenceEngine.calculateAccuracy(widget.selectedSymptomIds, disease.id);
+    final alternatives = widget.results.skip(1).toList();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Hasil Diagnosis')),
@@ -83,13 +84,35 @@ class _ResultScreenState extends State<ResultScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (accuracy < 100)
+              Container(
+                margin: const EdgeInsets.only(bottom: 24),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.orange.shade200),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.info_outline, color: Colors.orange),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'Tidak ditemukan kecocokan 100%. Menampilkan hasil dengan kemiripan tertinggi.',
+                        style: TextStyle(fontSize: 13, color: Colors.orange, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             // Hero Result
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: const Border(left: BorderSide(color: Colors.green, width: 8)),
+                border: Border(left: BorderSide(color: accuracy == 100 ? Colors.green : Colors.orange, width: 8)),
                 boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10)],
               ),
               child: Row(
@@ -98,11 +121,14 @@ class _ResultScreenState extends State<ResultScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Row(
+                        Row(
                           children: [
-                            Icon(Icons.verified, color: Colors.green, size: 16),
-                            SizedBox(width: 4),
-                            Text('HASIL DIAGNOSIS AKHIR', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.green, letterSpacing: 1.2)),
+                            Icon(accuracy == 100 ? Icons.verified : Icons.analytics, color: accuracy == 100 ? Colors.green : Colors.orange, size: 16),
+                            const SizedBox(width: 4),
+                            Text(
+                              accuracy == 100 ? 'HASIL DIAGNOSIS AKHIR' : 'KEMUNGKINAN TERBESAR',
+                              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: accuracy == 100 ? Colors.green : Colors.orange, letterSpacing: 1.2),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 8),
@@ -115,11 +141,14 @@ class _ResultScreenState extends State<ResultScreen> {
                   const SizedBox(width: 16),
                   Container(
                     padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(color: Colors.green.shade100, borderRadius: BorderRadius.circular(12)),
+                    decoration: BoxDecoration(
+                      color: (accuracy == 100 ? Colors.green : Colors.orange).withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: Column(
                       children: [
-                        Text('${accuracy.toInt()}%', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green)),
-                        const Text('Akurasi', style: TextStyle(fontSize: 10, color: Colors.green)),
+                        Text('${accuracy.toInt()}%', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: accuracy == 100 ? Colors.green : Colors.orange)),
+                        Text('Akurasi', style: TextStyle(fontSize: 10, color: accuracy == 100 ? Colors.green : Colors.orange)),
                       ],
                     ),
                   )
@@ -148,6 +177,14 @@ class _ResultScreenState extends State<ResultScreen> {
                 ],
               ),
             ),
+
+            if (alternatives.isNotEmpty) ...[
+              const SizedBox(height: 32),
+              const Text('Alternatif Diagnosis Lainnya', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 12),
+              ...alternatives.map((alt) => _buildAlternativeCard(alt)),
+            ],
+
             const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
@@ -208,6 +245,34 @@ class _ResultScreenState extends State<ResultScreen> {
           const SizedBox(height: 8),
           Text(content, style: const TextStyle(fontSize: 13)),
         ],
+      ),
+    );
+  }
+
+  Widget _buildAlternativeCard(Disease disease) {
+    final accuracy = InferenceEngine.calculateAccuracy(widget.selectedSymptomIds, disease.id);
+    return Card(
+      elevation: 0,
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey.shade200),
+      ),
+      child: ListTile(
+        title: Text(disease.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+        subtitle: Text('${accuracy.toInt()}% Kecocokan', style: const TextStyle(fontSize: 12, color: Colors.green)),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ResultScreen(
+                results: [disease, ...widget.results.where((r) => r.id != disease.id)],
+                selectedSymptomIds: widget.selectedSymptomIds,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
